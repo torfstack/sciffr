@@ -17,4 +17,5 @@ func main() {
 	if err != nil {
 		fmt.Printf("could not start sciffr: %v", err)
 	}
+	fmt.Printf("started sciffr")
 }
