@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.appName }}-deployment
+  name: {{ .Values.appName }}
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ .Values.appName }}-deployment
+    app: {{ .Values.appName }}
 spec:
   replicas: 1
   selector:
@@ -23,3 +23,5 @@ spec:
               hostPort: {{ .Values.port }}
       imagePullSecrets:
         - name: regcred
+  strategy:
+    type: Recreate
