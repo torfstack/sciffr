@@ -1,0 +1,3 @@
+appName: sciffr
+namespace: prod
+port: 6500

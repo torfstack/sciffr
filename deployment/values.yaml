@@ -1,1 +1,3 @@
-appName: sciffr
+image:
+  name: ghcr.io/torfstack/sciffr
+  version: latest

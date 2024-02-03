@@ -1,0 +1,3 @@
+#! /bin/bash
+
+helm upgrade sciffr deployment --values deployment/values-prod.yaml -f deployment/values-prod.yaml -n prod
