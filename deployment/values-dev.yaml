@@ -1,3 +1,6 @@
 appName: sciffr-dev
 namespace: dev
 port: 6520
+
+gin:
+  mode: debug

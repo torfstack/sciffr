@@ -18,6 +18,9 @@ spec:
       containers:
         - name: {{ .Values.appName }}
           image: {{ .Values.image.name }}:{{ .Values.image.version }}
+          env:
+            - name: "GIN_MODE"
+              value: {{ .Values.gin.mode }}
           ports:
             - containerPort: 8080
               hostPort: {{ .Values.port }}
