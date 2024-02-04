@@ -1,3 +1,0 @@
-#! /bin/bash
-
-helm install sciffr deployment --values deployment/values-prod.yaml -f deployment/values-prod.yaml -n prod

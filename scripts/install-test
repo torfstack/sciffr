@@ -1,3 +1,0 @@
-#! /bin/bash
-
-helm install sciffr-test deployment --values deployment/values-test.yaml -f deployment/values-test.yaml -n test
