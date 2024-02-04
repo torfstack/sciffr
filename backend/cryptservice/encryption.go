@@ -12,25 +12,25 @@ type CryptService interface {
 }
 
 type cryptService struct {
-	key []byte
+	cipher cipher.AEAD
 }
 
 func New() CryptService {
 	return &cryptService{
-		key: generateKey(),
+		cipher: initCipher(),
 	}
 }
 
 func (c *cryptService) Encrypt(bytes []byte) []byte {
 	nonce := c.nonce()
-	ciphertext := c.cipher().Seal(nonce, nonce, bytes, nil)
+	ciphertext := c.cipher.Seal(nonce, nonce, bytes, nil)
 	return ciphertext
 }
 
 func (c *cryptService) Decrypt(bytes []byte) []byte {
-	nonceSize := c.cipher().NonceSize()
+	nonceSize := c.cipher.NonceSize()
 	nonce, toDecrypt := bytes[:nonceSize], bytes[nonceSize:]
-	plaintext, err := c.cipher().Open(nil, nonce, toDecrypt, nil)
+	plaintext, err := c.cipher.Open(nil, nonce, toDecrypt, nil)
 	if err != nil {
 		// handle error dunno
 	}
@@ -38,16 +38,16 @@ func (c *cryptService) Decrypt(bytes []byte) []byte {
 }
 
 func (c *cryptService) nonce() []byte {
-	n := make([]byte, c.cipher().NonceSize())
+	n := make([]byte, c.cipher.NonceSize())
 	read, err := rand.Read(n)
-	if err != nil || read != c.cipher().NonceSize() {
+	if err != nil || read != c.cipher.NonceSize() {
 		// handle error dunno
 	}
 	return n
 }
 
-func (c *cryptService) cipher() cipher.AEAD {
-	block, err := aes.NewCipher(c.key)
+func initCipher() cipher.AEAD {
+	block, err := aes.NewCipher(generateKey())
 	if err != nil {
 		// handle error dunno
 	}
