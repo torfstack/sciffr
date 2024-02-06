@@ -2,7 +2,9 @@ package backend
 
 import (
 	"encoding/base64"
+	"errors"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"sciffr/backend/cryptservice"
 )
 
@@ -26,7 +28,8 @@ func (b *Backend) encrypt(c *gin.Context) {
 	var i Plaintext
 	err := c.BindJSON(&i)
 	if err != nil {
-		// TODO: handle error
+		_ = c.AbortWithError(http.StatusBadRequest, errors.New("invalid request"))
+		return
 	}
 	toEncrypt := base64Decode(i.Plaintext)
 	encrypted := b.crypt.Encrypt(toEncrypt)
@@ -40,7 +43,8 @@ func (b *Backend) decrypt(c *gin.Context) {
 	var i Ciphertext
 	err := c.BindJSON(&i)
 	if err != nil {
-		// TODO: handle error
+		_ = c.AbortWithError(http.StatusBadRequest, errors.New("invalid request"))
+		return
 	}
 	toDecrypt := base64Decode(i.Ciphertext)
 	key := base64Decode(i.Key)
