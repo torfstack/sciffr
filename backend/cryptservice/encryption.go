@@ -6,31 +6,53 @@ import (
 	"crypto/rand"
 )
 
+const (
+	NonceSize = 12
+)
+
+type Encrypted struct {
+	Ciphertext []byte
+	Key        []byte
+}
+
 type CryptService interface {
-	Encrypt([]byte) []byte
-	Decrypt([]byte) []byte
+	Encrypt([]byte) Encrypted
+	Decrypt(encrypted Encrypted) []byte
 }
 
 type cryptService struct {
-	cipher cipher.AEAD
+	masterCipher cipher.AEAD
 }
 
 func New() CryptService {
+	master := generateKey()
 	return &cryptService{
-		cipher: initCipher(),
+		masterCipher: initCipher(master),
 	}
 }
 
-func (c *cryptService) Encrypt(bytes []byte) []byte {
+func (c *cryptService) Encrypt(bytes []byte) Encrypted {
 	nonce := c.nonce()
-	ciphertext := c.cipher.Seal(nonce, nonce, bytes, nil)
-	return ciphertext
+	key := generateKey()
+	sealedKey := c.masterCipher.Seal(nonce, nonce, key, nil)
+	cip := initCipher(key)
+	ciphertext := cip.Seal(nonce, nonce, bytes, nil)
+	return Encrypted{
+		Ciphertext: ciphertext,
+		Key:        sealedKey,
+	}
 }
 
-func (c *cryptService) Decrypt(bytes []byte) []byte {
-	nonceSize := c.cipher.NonceSize()
-	nonce, toDecrypt := bytes[:nonceSize], bytes[nonceSize:]
-	plaintext, err := c.cipher.Open(nil, nonce, toDecrypt, nil)
+func (c *cryptService) Decrypt(encrypted Encrypted) []byte {
+	bytes, key := encrypted.Ciphertext, encrypted.Key
+	keyNonce, keyToDecrypt := key[:NonceSize], key[NonceSize:]
+	bytesNonce, bytesToDecrypt := bytes[:NonceSize], bytes[NonceSize:]
+	keyDecrypted, err := c.masterCipher.Open(nil, keyNonce, keyToDecrypt, nil)
+	if err != nil {
+		// handle error dunno
+	}
+	cip := initCipher(keyDecrypted)
+	plaintext, err := cip.Open(nil, bytesNonce, bytesToDecrypt, nil)
 	if err != nil {
 		// handle error dunno
 	}
@@ -38,16 +60,16 @@ func (c *cryptService) Decrypt(bytes []byte) []byte {
 }
 
 func (c *cryptService) nonce() []byte {
-	n := make([]byte, c.cipher.NonceSize())
+	n := make([]byte, NonceSize)
 	read, err := rand.Read(n)
-	if err != nil || read != c.cipher.NonceSize() {
+	if err != nil || read != NonceSize {
 		// handle error dunno
 	}
 	return n
 }
 
-func initCipher() cipher.AEAD {
-	block, err := aes.NewCipher(generateKey())
+func initCipher(key []byte) cipher.AEAD {
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		// handle error dunno
 	}

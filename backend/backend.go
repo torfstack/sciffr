@@ -17,31 +17,39 @@ func New() *Backend {
 }
 
 func (b *Backend) Register(e *gin.Engine) {
-	e.POST("/encrypt", b.encrypt)
-	e.POST("/decrypt", b.decrypt)
+	envelope := e.Group("v1/envelope")
+	envelope.POST("/encrypt", b.encrypt)
+	envelope.POST("/decrypt", b.decrypt)
 }
 
 func (b *Backend) encrypt(c *gin.Context) {
-	var i CryptInput
+	var i Plaintext
 	err := c.BindJSON(&i)
 	if err != nil {
 		// TODO: handle error
 	}
-	output := base64Encode(b.crypt.Encrypt(base64Decode(i.Value)))
-	c.JSON(200, CryptOutput{
-		Value: output,
+	toEncrypt := base64Decode(i.Plaintext)
+	encrypted := b.crypt.Encrypt(toEncrypt)
+	c.JSON(200, Ciphertext{
+		Ciphertext: base64Encode(encrypted.Ciphertext),
+		Key:        base64Encode(encrypted.Key),
 	})
 }
 
 func (b *Backend) decrypt(c *gin.Context) {
-	var i CryptInput
+	var i Ciphertext
 	err := c.BindJSON(&i)
 	if err != nil {
 		// TODO: handle error
 	}
-	output := base64Encode(b.crypt.Decrypt(base64Decode(i.Value)))
-	c.JSON(200, CryptOutput{
-		Value: output,
+	toDecrypt := base64Decode(i.Ciphertext)
+	key := base64Decode(i.Key)
+	decrypted := b.crypt.Decrypt(cryptservice.Encrypted{
+		Ciphertext: toDecrypt,
+		Key:        key,
+	})
+	c.JSON(200, Plaintext{
+		Plaintext: base64Encode(decrypted),
 	})
 }
 
@@ -64,10 +72,11 @@ func encoding() *base64.Encoding {
 	return base64.RawURLEncoding
 }
 
-type CryptInput struct {
-	Value string `json:"value"`
+type Plaintext struct {
+	Plaintext string `json:"plaintext"`
 }
 
-type CryptOutput struct {
-	Value string `json:"value"`
+type Ciphertext struct {
+	Ciphertext string `json:"ciphertext"`
+	Key        string `json:"key"`
 }
