@@ -1,0 +1,16 @@
+#! /bin/bash
+
+# read version from file 'version'
+version=$(cat version)
+major=$(echo "$version" | cut -d. -f1)
+minor=$(echo "$version" | cut -d. -f2)
+patch=$(echo "$version" | cut -d. -f3)
+
+#  release version referenced in version file
+sh scripts/release "$version"
+
+# increment patch version and write to version file
+patch=$((patch+1))
+new_version="$major.$minor.$patch"
+echo "Writing new version $new_version to version file"
+echo "$new_version" > version

@@ -1,5 +1,4 @@
 #! /bin/bash
 
+echo "building sciffr to 'bin/sciffr'"
 CGO_ENABLED=0 GOOS=linux go build -o bin/sciffr
-docker buildx build -t ghcr.io/torfstack/sciffr:latest .
-docker push ghcr.io/torfstack/sciffr:latest

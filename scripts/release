@@ -1,0 +1,10 @@
+#! /bin/bash
+
+sh scripts/buildit
+tag=${1:-latest}
+echo "Releasing version '$tag'"
+docker buildx build -t ghcr.io/torfstack/sciffr:"$tag" .
+docker push ghcr.io/torfstack/sciffr:"$tag"
+
+
+
