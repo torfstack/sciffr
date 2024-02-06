@@ -1,6 +1,6 @@
 image:
   name: ghcr.io/torfstack/sciffr
-  version: latest
+  tag: 0.0.2
 
 gin:
   mode: release
