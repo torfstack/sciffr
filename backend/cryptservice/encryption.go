@@ -20,18 +20,18 @@ type CryptService interface {
 	Decrypt(encrypted Encrypted) []byte
 }
 
-type cryptService struct {
+type AesGcmCryptService struct {
 	masterCipher cipher.AEAD
 }
 
-func New() CryptService {
+func New() *AesGcmCryptService {
 	master := generateKey()
-	return &cryptService{
+	return &AesGcmCryptService{
 		masterCipher: initCipher(master),
 	}
 }
 
-func (c *cryptService) Encrypt(bytes []byte) Encrypted {
+func (c *AesGcmCryptService) Encrypt(bytes []byte) Encrypted {
 	nonce := c.nonce()
 	key := generateKey()
 	sealedKey := c.masterCipher.Seal(nonce, nonce, key, nil)
@@ -43,7 +43,7 @@ func (c *cryptService) Encrypt(bytes []byte) Encrypted {
 	}
 }
 
-func (c *cryptService) Decrypt(encrypted Encrypted) []byte {
+func (c *AesGcmCryptService) Decrypt(encrypted Encrypted) []byte {
 	bytes, key := encrypted.Ciphertext, encrypted.Key
 	keyNonce, keyToDecrypt := key[:NonceSize], key[NonceSize:]
 	bytesNonce, bytesToDecrypt := bytes[:NonceSize], bytes[NonceSize:]
@@ -59,7 +59,7 @@ func (c *cryptService) Decrypt(encrypted Encrypted) []byte {
 	return plaintext
 }
 
-func (c *cryptService) nonce() []byte {
+func (c *AesGcmCryptService) nonce() []byte {
 	n := make([]byte, NonceSize)
 	read, err := rand.Read(n)
 	if err != nil || read != NonceSize {

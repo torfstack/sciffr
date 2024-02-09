@@ -11,12 +11,12 @@ func Test_cryptService_Decrypt(t *testing.T) {
 	}
 	tests := []struct {
 		name          string
-		argsCreation  func(*cryptService) args
+		argsCreation  func(*AesGcmCryptService) args
 		wantAssertion func(*testing.T, []byte)
 	}{
 		{
 			name: "encryption can be decrypted",
-			argsCreation: func(service *cryptService) args {
+			argsCreation: func(service *AesGcmCryptService) args {
 				encrypted := service.Encrypt([]byte("hello world!"))
 				return args{
 					encrypted: Encrypted{
@@ -32,9 +32,7 @@ func Test_cryptService_Decrypt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &cryptService{
-				masterCipher: initCipher(generateKey()),
-			}
+			c := New()
 			got := c.Decrypt(tt.argsCreation(c).encrypted)
 			tt.wantAssertion(t, got)
 		})
@@ -71,9 +69,7 @@ func Test_cryptService_Encrypt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &cryptService{
-				masterCipher: initCipher(generateKey()),
-			}
+			c := New()
 			got := c.Encrypt(tt.args.bytes)
 			tt.wantAssertion(t, got)
 		})
