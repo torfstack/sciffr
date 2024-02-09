@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3768022-f0d5-4e2a-b146-d78dab8bd262" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cryptservice/encryption.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cryptservice/encryption.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cryptservice/encryption_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cryptservice/encryption_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deployment/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/deployment/values.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +54,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1707494905740</updated>
-      <workItem from="1707494907091" duration="353000" />
+      <workItem from="1707494907091" duration="471000" />
     </task>
     <servers />
   </component>
