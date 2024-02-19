@@ -3,9 +3,12 @@ package backend
 import (
 	"encoding/base64"
 	"errors"
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"net/http"
 	"sciffr/backend/cryptservice"
+	"sciffr/backend/db"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Backend struct {
@@ -22,6 +25,16 @@ func (b *Backend) Register(e *gin.Engine) {
 	envelope := e.Group("v1/envelope")
 	envelope.POST("/encrypt", b.encrypt)
 	envelope.POST("/decrypt", b.decrypt)
+
+	err := db.NewDatabasePostgres().Connect()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = db.NewDatabasePostgres().AddKey("test")
+	if err != nil {
+		return
+	}
 }
 
 func (b *Backend) encrypt(c *gin.Context) {

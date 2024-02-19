@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS keys (id SERIAL PRIMARY KEY, secret TEXT, issued_at BIGINT)
