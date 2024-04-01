@@ -6,6 +6,11 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize)]
 pub struct Config {
+    pub encryption: Encryption,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct Encryption {
     pub key: String,
 }
 
@@ -34,7 +39,7 @@ pub(crate) fn read_in_config() -> Config {
                 println!("Created config file at {}", config_path.display());
                 let key = random_key();
                 println!("Generated random key and write to config file");
-                let config = Config { key };
+                let config = Config { encryption: Encryption { key }};
                 let toml = toml::to_string(&config).unwrap();
                 std::fs::write(&config_path, toml).unwrap();
             },

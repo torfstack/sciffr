@@ -4,7 +4,7 @@ use aes_gcm::aead::{Aead, Nonce, OsRng};
 use aes_gcm::{AeadCore, Aes256Gcm};
 use base64::prelude::*;
 
-pub(crate) struct Cipher {
+pub struct Cipher {
     key: [u8; 32],
 }
 
@@ -36,8 +36,7 @@ impl CipherTrait for Cipher {
     }
 
     fn decrypt(&self, data: &str) -> String {
-        let key = &self.key.into();
-        let cipher = Aes256Gcm::new(key);
+        let cipher = Aes256Gcm::new(&self.key.into());
         let decoded = BASE64_STANDARD.decode(data.as_bytes()).unwrap();
         let nonce = Nonce::<Aes256Gcm>::from_slice(&decoded[4..16]);
         let data = &decoded[16..];

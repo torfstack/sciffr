@@ -5,7 +5,7 @@ mod cipher;
 
 fn main() {
     let config = config::read_in_config();
-    let cipher = cipher::Cipher::new(config.key);
+    let cipher = cipher::Cipher::new(config.encryption.key);
     let encrypted = cipher.encrypt("Hello, world!");
     println!("Encrypted: {}", encrypted);
     let decrypted = cipher.decrypt(&encrypted);
