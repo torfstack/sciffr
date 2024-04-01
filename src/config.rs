@@ -29,7 +29,7 @@ fn check_sciffr_dir() {
     }
 }
 
-pub(crate) fn read_in_config() -> Config {
+pub fn read_in_config() -> Config {
     check_sciffr_dir();
     let config_path = home::home_dir().unwrap().join(".sciffr/config.toml");
     if !config_path.exists() {
