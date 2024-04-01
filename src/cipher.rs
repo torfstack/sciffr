@@ -9,13 +9,12 @@ pub struct Cipher {
 }
 
 pub trait CipherTrait {
-    fn new(key: String) -> Self;
     fn encrypt(&self, data: &str) -> String;
     fn decrypt(&self, data: &str) -> String;
 }
 
-impl CipherTrait for Cipher {
-    fn new(key: String) -> Self {
+impl Cipher {
+    pub fn new(key: String) -> Self {
         let key = hex::decode(key).unwrap();
         let boxed_slice = key.into_boxed_slice();
         let boxed_array: Box<[u8; 32]> = match boxed_slice.try_into() {
@@ -24,7 +23,9 @@ impl CipherTrait for Cipher {
         };
         Cipher { key: *boxed_array }
     }
+}
 
+impl CipherTrait for Cipher {
     fn encrypt(&self, data: &str) -> String {
         let key = &self.key.into();
         let cipher = Aes256Gcm::new(key);
