@@ -1,6 +1,6 @@
 use aes;
 use aes::cipher::KeyInit;
-use aes_gcm::aead::{Aead, OsRng};
+use aes_gcm::aead::{Aead, Nonce, OsRng};
 use aes_gcm::{AeadCore, Aes256Gcm};
 use base64::prelude::*;
 
@@ -30,10 +30,17 @@ impl CipherTrait for Cipher {
         let cipher = Aes256Gcm::new(key);
         let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
         let encrypted = cipher.encrypt(&nonce, data.as_ref()).unwrap();
+        let nonce_size = [0, 0, 0, 12];
+        let encrypted = [&nonce_size, nonce.as_slice(), encrypted.as_ref()].concat();
         BASE64_STANDARD.encode(encrypted)
     }
 
     fn decrypt(&self, data: &str) -> String {
-        String::from("test")
+        let key = &self.key.into();
+        let cipher = Aes256Gcm::new(key);
+        let decoded = BASE64_STANDARD.decode(data.as_bytes()).unwrap();
+        let nonce = Nonce::<Aes256Gcm>::from_slice(&decoded[4..16]);
+        let data = &decoded[16..];
+        String::from_utf8(cipher.decrypt(nonce, data).unwrap()).unwrap()
     }
 }

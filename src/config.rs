@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize)]
 pub struct Config {
-    pub(crate) key: String,
+    pub key: String,
 }
 
 fn check_sciffr_dir() {
